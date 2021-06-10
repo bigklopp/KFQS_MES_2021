@@ -76,7 +76,7 @@ namespace KFQS_Form
             //R/M : 원자재
             //S/M : 부자재(H / W)
             //SFP : 반제품
-            rtnDtTemp = _Common.GET_ItemCodeFERT_Code("R/M");
+            rtnDtTemp = _Common.GET_ItemCodeFERT_Code("ROH");
             Common.FillComboboxMaster(this.cboItemCode, rtnDtTemp, rtnDtTemp.Columns["CODE_ID"].ColumnName, rtnDtTemp.Columns["CODE_NAME"].ColumnName, "ALL", "");
 
             #endregion
@@ -107,7 +107,7 @@ namespace KFQS_Form
                 string sItemCode       = DBHelper.nvlString(this.cboItemCode.Value);
                 string sLotNo          = DBHelper.nvlString(txtLotNo.Text);
 
-                rtnDtTemp = helper.FillTable("00MM_STockMM_S1", CommandType.StoredProcedure
+                rtnDtTemp = helper.FillTable("17MM_STockMM_M_S1", CommandType.StoredProcedure
                                     , helper.CreateParameter("PLANTCODE",   sPlantCode,  DbType.String, ParameterDirection.Input)
                                     , helper.CreateParameter("ITEMCODE",    sItemCode,   DbType.String, ParameterDirection.Input)
                                     , helper.CreateParameter("LOTNO",       sLotNo,      DbType.String, ParameterDirection.Input)

@@ -1,4 +1,4 @@
-﻿namespace DC_MM
+﻿namespace KFQS_Form
 {
     partial class MM_StockOut_M
     {

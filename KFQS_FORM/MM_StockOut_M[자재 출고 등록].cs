@@ -20,7 +20,7 @@ using DC00_WinForm;
 
 #endregion
 
-namespace DC_MM
+namespace KFQS_Form
 {
     public partial class MM_StockOut_M : DC00_WinForm.BaseMDIChildForm
     {
@@ -81,11 +81,15 @@ namespace DC_MM
 
             rtnDtTemp = _Common.GET_ItemCodeFERT_Code("ROH");
             Common.FillComboboxMaster(this.cboItemCode, rtnDtTemp, rtnDtTemp.Columns["CODE_ID"].ColumnName, rtnDtTemp.Columns["CODE_NAME"].ColumnName, "ALL", "");
-
+            
+            /*dtStart_H.Value = string.Format("{0:yyyyMM01}", DateTime.Now);
+            dtEnd_H.Value   = string.Format("{0:yyyyMMdd}", DateTime.Now);*/
 
             string sPlantCode = Convert.ToString(this.cboPlantCode.Value);
             this.cboPlantCode.Value = "1000";
             #endregion
+
+           
         }
         #endregion  MM_StockOut_M_Load
 
