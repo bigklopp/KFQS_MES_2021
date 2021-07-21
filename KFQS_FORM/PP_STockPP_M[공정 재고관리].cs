@@ -197,7 +197,56 @@ namespace KFQS_Form
             }
         }
         #endregion
-     
+
+        private void ultraButton1_Click(object sender, EventArgs e)
+        {
+            if (grid1.ActiveRow == null) return;
+            if (Convert.ToString(this.grid1.ActiveRow.Cells["ITEMTYPE"].Value) == "FERT")
+            {
+                DBHelper helper = new DBHelper(false);
+                try
+                {
+                    string sPlantCode = Convert.ToString(grid1.ActiveRow.Cells["PLANTCODE"].Value);
+                    string sLotNo     = Convert.ToString(grid1.ActiveRow.Cells["LOTNO"].Value);
+                    DataTable dtTemp = helper.FillTable("17PP_StockPP_S1", CommandType.StoredProcedure
+                                                       , helper.CreateParameter("PLANTCODE", sPlantCode, DbType.String, ParameterDirection.Input)
+                                                       , helper.CreateParameter("LOTNO",     sLotNo, DbType.String, ParameterDirection.Input)
+                                                       );
+
+                    if (dtTemp.Rows.Count == 0)
+                    {
+                        ShowDialog("바코드 정보를 조회할 내용이 없습니다.", DialogForm.DialogType.OK);
+                        return;
+                    }
+                    // 바코드 디자인 선언
+                    Report_LotBacodeFERT sReportFert = new Report_LotBacodeFERT();
+                    // 바코드 디자인이 첨부될 레포트 북 클래스 선언
+                    Telerik.Reporting.ReportBook repBook = new Telerik.Reporting.ReportBook();
+                    // 바코드 디자인에 데이터 바인딩
+                    sReportFert.DataSource = dtTemp;
+                    // 레포트 북에 디자인 추가.
+                    repBook.Reports.Add(sReportFert);
+
+                    // 레포트 미리보기 창에 레포트 북 등록 및 출력 장수 입력
+                    ReportViewer BarcodeViewer = new ReportViewer(repBook, 1);
+                    // 미리보기 창 호출
+                    BarcodeViewer.ShowDialog();
+
+                    
+                    
+
+                }
+                catch (Exception ex)
+                {
+                    helper.Rollback();
+                    ShowDialog(ex.ToString() +" \n "+ helper.RSMSG);
+                }
+                finally
+                {
+                    helper.Close();
+                }
+            }
+        }
     }
 }
 

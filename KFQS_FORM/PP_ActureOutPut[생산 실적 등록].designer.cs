@@ -44,8 +44,8 @@
             Infragistics.Win.Appearance appearance18 = new Infragistics.Win.Appearance();
             Infragistics.Win.Appearance appearance2 = new Infragistics.Win.Appearance();
             Infragistics.Win.Appearance appearance3 = new Infragistics.Win.Appearance();
-            Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton dateButton5 = new Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton();
-            Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton dateButton6 = new Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton();
+            Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton dateButton1 = new Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton();
+            Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton dateButton2 = new Infragistics.Win.UltraWinSchedule.CalendarCombo.DateButton();
             Infragistics.Win.Appearance appearance10 = new Infragistics.Win.Appearance();
             Infragistics.Win.Appearance appearance8 = new Infragistics.Win.Appearance();
             Infragistics.Win.Appearance appearance9 = new Infragistics.Win.Appearance();
@@ -312,7 +312,7 @@
             // 
             // dtpEnd
             // 
-            this.dtpEnd.DateButtons.Add(dateButton5);
+            this.dtpEnd.DateButtons.Add(dateButton1);
             this.dtpEnd.Location = new System.Drawing.Point(753, 26);
             this.dtpEnd.Name = "dtpEnd";
             this.dtpEnd.NonAutoSizeHeight = 32;
@@ -321,7 +321,7 @@
             // 
             // dtpStart
             // 
-            this.dtpStart.DateButtons.Add(dateButton6);
+            this.dtpStart.DateButtons.Add(dateButton2);
             this.dtpStart.Location = new System.Drawing.Point(521, 26);
             this.dtpStart.Name = "dtpStart";
             this.dtpStart.NonAutoSizeHeight = 32;
@@ -384,6 +384,7 @@
             this.btnProduct.Size = new System.Drawing.Size(149, 36);
             this.btnProduct.TabIndex = 252;
             this.btnProduct.Text = "생산 실적 등록";
+            this.btnProduct.Click += new System.EventHandler(this.btnProduct_Click);
             // 
             // btnOrderClose
             // 
@@ -392,6 +393,7 @@
             this.btnOrderClose.Size = new System.Drawing.Size(149, 36);
             this.btnOrderClose.TabIndex = 251;
             this.btnOrderClose.Text = "작업 지시 종료";
+            this.btnOrderClose.Click += new System.EventHandler(this.btnOrderClose_Click);
             // 
             // txtBad
             // 

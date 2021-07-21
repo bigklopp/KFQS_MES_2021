@@ -1,6 +1,6 @@
 ﻿namespace KFQS_Form
 {
-    partial class PP_STockPP_M
+    partial class PP_STockHALB_M
     {
         /// <summary>
         /// 필수 디자이너 변수입니다.
@@ -48,7 +48,6 @@
             this.grid1 = new DC00_Component.Grid(this.components);
             this.txtLotNo = new Infragistics.Win.UltraWinEditors.UltraTextEditor();
             this.lblWorkerName_H = new DC00_Component.SLabel();
-            this.ultraButton1 = new Infragistics.Win.Misc.UltraButton();
             this.cboItemType = new Infragistics.Win.UltraWinEditors.UltraComboEditor();
             this.sLabel1 = new DC00_Component.SLabel();
             ((System.ComponentModel.ISupportInitialize)(this.gbxHeader)).BeginInit();
@@ -69,7 +68,6 @@
             this.gbxHeader.ContentPadding.Top = 4;
             this.gbxHeader.Controls.Add(this.cboItemType);
             this.gbxHeader.Controls.Add(this.sLabel1);
-            this.gbxHeader.Controls.Add(this.ultraButton1);
             this.gbxHeader.Controls.Add(this.txtLotNo);
             this.gbxHeader.Controls.Add(this.lblWorkerName_H);
             this.gbxHeader.Controls.Add(this.cboPlantCode);
@@ -110,7 +108,7 @@
             this.cboPlantCode.Font = new System.Drawing.Font("맑은 고딕", 10F);
             this.cboPlantCode.Location = new System.Drawing.Point(57, 22);
             this.cboPlantCode.Name = "cboPlantCode";
-            this.cboPlantCode.Size = new System.Drawing.Size(145, 32);
+            this.cboPlantCode.Size = new System.Drawing.Size(145, 27);
             this.cboPlantCode.TabIndex = 0;
             // 
             // grid1
@@ -227,21 +225,12 @@
             this.lblWorkerName_H.TabIndex = 186;
             this.lblWorkerName_H.Text = "LOT 번호";
             // 
-            // ultraButton1
-            // 
-            this.ultraButton1.Location = new System.Drawing.Point(920, 13);
-            this.ultraButton1.Name = "ultraButton1";
-            this.ultraButton1.Size = new System.Drawing.Size(152, 44);
-            this.ultraButton1.TabIndex = 188;
-            this.ultraButton1.Text = "LOT 발행";
-            this.ultraButton1.Click += new System.EventHandler(this.ultraButton1_Click);
-            // 
             // cboItemType
             // 
             this.cboItemType.Font = new System.Drawing.Font("맑은 고딕", 10F);
             this.cboItemType.Location = new System.Drawing.Point(318, 22);
             this.cboItemType.Name = "cboItemType";
-            this.cboItemType.Size = new System.Drawing.Size(251, 32);
+            this.cboItemType.Size = new System.Drawing.Size(251, 27);
             this.cboItemType.TabIndex = 189;
             // 
             // sLabel1
@@ -262,13 +251,13 @@
             this.sLabel1.TabIndex = 190;
             this.sLabel1.Text = "품목구분";
             // 
-            // PP_STockPP_M
+            // PP_STockHALB_M
             // 
             this.ClientSize = new System.Drawing.Size(1298, 778);
-            this.Name = "PP_STockPP_M";
+            this.Name = "PP_STockHALB_M";
             this.Padding = new System.Windows.Forms.Padding(3);
-            this.Text = "공정 재고 관리";
-            this.Load += new System.EventHandler(this.PP_STockPP_M_Load);
+            this.Text = "재공 재고 조회";
+            this.Load += new System.EventHandler(this.PP_STockHALB_M_Load);
             ((System.ComponentModel.ISupportInitialize)(this.gbxHeader)).EndInit();
             this.gbxHeader.ResumeLayout(false);
             this.gbxHeader.PerformLayout();
@@ -288,7 +277,6 @@
         private DC00_Component.Grid grid1;
         private Infragistics.Win.UltraWinEditors.UltraTextEditor txtLotNo;
         private DC00_Component.SLabel lblWorkerName_H;
-        private Infragistics.Win.Misc.UltraButton ultraButton1;
         private Infragistics.Win.UltraWinEditors.UltraComboEditor cboItemType;
         private DC00_Component.SLabel sLabel1;
     }

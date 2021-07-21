@@ -58,7 +58,7 @@ namespace KFQS_Form
                 _GridUtil.InitColumnUltraGrid(grid1, "PRODQTY",          "양품 수량",           true, GridColDataType_emu.Double,    130, 130, Infragistics.Win.HAlign.Right, true, false);
                 _GridUtil.InitColumnUltraGrid(grid1, "BADQTY",           "불량 수량",           true, GridColDataType_emu.Double,    130, 130, Infragistics.Win.HAlign.Right, true, false);
                 _GridUtil.InitColumnUltraGrid(grid1, "UNITCODE",         "단위",                true, GridColDataType_emu.VarChar,   130, 130, Infragistics.Win.HAlign.Left, true, false);
-                _GridUtil.InitColumnUltraGrid(grid1, "MATLOTNO",         "투입LOT",                true, GridColDataType_emu.VarChar,   130, 130, Infragistics.Win.HAlign.Left, true, false);
+                _GridUtil.InitColumnUltraGrid(grid1, "MATLOTNO",         "투입LOT",             true, GridColDataType_emu.VarChar,   130, 130, Infragistics.Win.HAlign.Left, true, false);
                 _GridUtil.InitColumnUltraGrid(grid1, "COMPONENT",        "투입품목",            true, GridColDataType_emu.VarChar,   130, 130, Infragistics.Win.HAlign.Left, true, false);
                 _GridUtil.InitColumnUltraGrid(grid1, "COMPONENTQTY",     "투입 수량",           true, GridColDataType_emu.Double,    130, 130, Infragistics.Win.HAlign.Right, true, false);
                 _GridUtil.InitColumnUltraGrid(grid1, "CUNITCODE",        "투입 단위",           true, GridColDataType_emu.VarChar,   130, 130, Infragistics.Win.HAlign.Left, true, false);
@@ -375,19 +375,162 @@ namespace KFQS_Form
                 {
 
                     helper.Commit();
-                    ShowDialog("정상적으로 등록되었습니다.", DC00_WinForm.DialogForm.DialogType.OK);
+                    
+                    ShowDialog(helper.RSMSG, DC00_WinForm.DialogForm.DialogType.OK);
                 }
                 else
                 {
                     helper.Rollback();
-                    ShowDialog("등록 중 오류가 발생하였습니다.", DC00_WinForm.DialogForm.DialogType.OK);
+                    ShowDialog("등록 중 오류가 발생하였습니다." + helper.RSMSG, DC00_WinForm.DialogForm.DialogType.OK);
                 }
-                ShowDialog(helper.RSMSG);
+                
             }
             catch(Exception ex)
             {
                 helper.Rollback();
                 ShowDialog(ex.ToString() +"\t" + helper.RSMSG);
+            }
+            finally
+            {
+                helper.Close();
+            }
+        }
+
+        private void btnProduct_Click(object sender, EventArgs e)
+        {
+            // 생산 실적 등록
+            if (this.grid1.ActiveRow == null)
+            {
+                ShowDialog("작업 지시를 선택하세요.", DC00_WinForm.DialogForm.DialogType.OK);
+                return;
+            }
+            double dProdQty   = 0;  // 누적 양품 수량
+            double dErrorQty  = 0;  // 누적 불량 수량
+            double dTProdQty  = 0;  // 입력 양품 수량
+            double dTErrorQty = 0;  // 입력 불량 수량
+            double dOrderQty  = 0;  // 작업 지시 수량
+            double dInQty     = 0;  // 투입 LOT 잔량
+
+            string sProdQty = Convert.ToString(this.grid1.ActiveRow.Cells["PRODQTY"].Value).Replace(",", "");
+
+            double.TryParse(sProdQty, out dProdQty); // 스트링에서 더블로 변환 안 되는 경우 예외 발생
+                                                     //그 예외를 try catch로 보여주는 것과 같은 기능
+
+            string sBadQty = Convert.ToString(this.grid1.ActiveRow.Cells["BADQTY"].Value).Replace(",", "");
+            double.TryParse(sBadQty, out dErrorQty);
+
+            string sTProdQty = Convert.ToString(txtProduct.Text);
+            double.TryParse(sTProdQty, out dTProdQty);
+
+            string sTBadQty = Convert.ToString(txtBad.Text);
+            double.TryParse(sTBadQty, out dTErrorQty);
+
+
+            string sOrderQty = Convert.ToString(this.grid1.ActiveRow.Cells["PLANQTY"].Value).Replace(",", "");
+            double.TryParse(sOrderQty, out dOrderQty);
+
+            string sInQty = Convert.ToString(this.grid1.ActiveRow.Cells["COMPONENTQTY"].Value).Replace(",", "");
+            double.TryParse(sInQty, out dInQty);
+
+            if (dInQty == 0)
+            {
+                ShowDialog("투입한 LOT이 존재하지 않습니다.", DC00_WinForm.DialogForm.DialogType.OK);
+                return;
+            }
+            
+            if ((dTProdQty + dTErrorQty) == 0)
+            {
+                ShowDialog("실적 수량을 입력하세요.", DC00_WinForm.DialogForm.DialogType.OK);
+                return;
+            }
+            if (dOrderQty < ((dProdQty + dErrorQty) + (dTProdQty + dTErrorQty)))
+            {
+                ShowDialog("생산 수량 및 불량 수량의 합계가 지시 수량보다 많습니다.", DC00_WinForm.DialogForm.DialogType.OK);
+                return;
+            }
+            DBHelper helper = new DBHelper("", true);
+
+            try
+            {
+                helper.ExecuteNoneQuery("17PP_ActureOutput_U2", CommandType.StoredProcedure
+                                                                   , helper.CreateParameter("PLANTCODE",           plantCode,                                                            DbType.String, ParameterDirection.Input)
+                                                                   , helper.CreateParameter("WORKCENTERCODE",      Convert.ToString(this.grid1.ActiveRow.Cells["WORKCENTERCODE"].Value), DbType.String, ParameterDirection.Input)
+                                                                   , helper.CreateParameter("ORDERNO",             Convert.ToString(this.grid1.ActiveRow.Cells["ORDERNO"].Value),        DbType.String, ParameterDirection.Input)
+                                                                   , helper.CreateParameter("ITEMCODE",            Convert.ToString(this.grid1.ActiveRow.Cells["ITEMCODE"].Value),       DbType.String, ParameterDirection.Input)
+                                                                   , helper.CreateParameter("UNITCODE",            Convert.ToString(this.grid1.ActiveRow.Cells["UNITCODE"].Value),      DbType.String, ParameterDirection.Input)
+                                                                   , helper.CreateParameter("PRODQTY",             dTProdQty,                                                            DbType.String, ParameterDirection.Input)
+                                                                   , helper.CreateParameter("ERRORQTY",              dTErrorQty,                                                           DbType.String, ParameterDirection.Input)
+                                                                   , helper.CreateParameter("MATLOTNO",            Convert.ToString(this.grid1.ActiveRow.Cells["MATLOTNO"].Value),       DbType.String, ParameterDirection.Input)
+                                                                   , helper.CreateParameter("CITEMCODE",           Convert.ToString(this.grid1.ActiveRow.Cells["COMPONENT"].Value),      DbType.String, ParameterDirection.Input)
+                                                                   , helper.CreateParameter("CUNITCODE",           Convert.ToString(this.grid1.ActiveRow.Cells["CUNITCODE"].Value),      DbType.String, ParameterDirection.Input)
+
+                                                                   );
+                if (helper.RSCODE != "S")
+                {
+                    helper.Rollback();
+                    ShowDialog(helper.RSMSG);
+                    return;
+                }
+                helper.Commit();
+                ShowDialog("상태 등록을 완료 하였습니다.", DialogForm.DialogType.OK);
+                DoInquire();
+                txtInLotNo.Text = "";
+                txtProduct.Text = "";
+                txtBad.Text = "";
+            }
+            catch (Exception ex)
+            {
+                helper.Rollback();
+                ShowDialog("오류 발생" + helper.RSMSG, DC00_WinForm.DialogForm.DialogType.OK);
+            }
+            finally
+            {
+                helper.Close();
+            }
+        }
+
+        private void btnOrderClose_Click(object sender, EventArgs e)
+        {
+            // 작업 지시 종료
+            if (grid1.Rows.Count == 0) return;
+            if (grid1.ActiveRow == null) return;
+            if (Convert.ToString(grid1.ActiveRow.Cells["MATLOTNO"].Value) != "" )
+            {
+                ShowDialog("LOT 투입 취소 후 진행하세요.", DC00_WinForm.DialogForm.DialogType.OK);
+                return;
+            }
+            // 가동일 경우 종료 안 되도록 확인
+            if(Convert.ToString(grid1.ActiveRow.Cells["WORKSTATUSCODE"].Value)=="R")
+            {
+                ShowDialog("비가동 등록 후 진행하세요.", DC00_WinForm.DialogForm.DialogType.OK);
+                return;
+            }
+            DBHelper helper = new DBHelper("", true);
+
+            try
+            {
+                helper.ExecuteNoneQuery("17PP_ActureOutput_U3", CommandType.StoredProcedure
+                                                                    , helper.CreateParameter("PLANTCODE",      "1000",                                                               DbType.String, ParameterDirection.Input)
+                                                                    , helper.CreateParameter("WORKCENTERCODE", Convert.ToString(this.grid1.ActiveRow.Cells["WORKCENTERCODE"].Value), DbType.String, ParameterDirection.Input)
+                                                                    , helper.CreateParameter("ORDERNO",        Convert.ToString(this.grid1.ActiveRow.Cells["ORDERNO"].Value),        DbType.String, ParameterDirection.Input)
+                                                                    );
+                if (helper.RSCODE != "S")
+                {
+                    helper.Rollback();
+                    ShowDialog(helper.RSMSG);
+                    return;
+                }
+                helper.Commit();
+                ShowDialog("상태 등록을 완료 하였습니다.", DialogForm.DialogType.OK);
+                DoInquire();
+                txtInLotNo.Text = "";
+                txtProduct.Text = "";
+                txtBad.Text = "";
+            }
+            catch (Exception ex)
+            {
+                helper.Rollback();
+                ShowDialog(ex.ToString(), DC00_WinForm.DialogForm.DialogType.OK);
             }
             finally
             {
